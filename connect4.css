@@ -1,19 +1,34 @@
 /* game board table */
 
+#board {
+	position: absolute;
+	box-shadow: 4px 4px 4px 1px #4d4d4d;
+	background-color: #000000;
+}
+
 #board td {
 	width: 50px;
 	height: 50px;
-	border: solid 1px #666;
+	background-color: white;
+	border: solid 1px white;
 }
 
 /* pieces are div within game table cells: draw as colored circles */
 
 .piece {
+	animation: drop-in 0.7s ease-out forwards;
 	border-radius: 50%;
 	margin: 5px;
 	width: 80%;
 	height: 80%;
 }
+/* I watched a Youtube video for the animation; MDN was too confusing */
+@keyframes drop-in {
+	0% {
+		transform: translateY(-1000%);
+	}
+}
+
 .p1 {
 	background-color: #0059ff;
 }
@@ -24,7 +39,9 @@
 /* column-top is table row of clickable areas for each column */
 
 #column-top td {
-	border: dashed 1px lightgray;
+	background-color: #00000000;
+	transition: 0.65s;
+	border: dashed 1px white;
 }
 
 #column-top td:hover {

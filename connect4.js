@@ -27,6 +27,7 @@ const makeBoard = () => {
 };
 
 /** makeHtmlBoard: make HTML table and row of column tops. */
+
 const makeHtmlBoard = () => {
 	// get "htmlBoard" variable from the item in HTML w/ID of "board"
 	const htmlBoard = document.querySelector('#board');
@@ -60,15 +61,12 @@ const makeHtmlBoard = () => {
 /** findSpotForCol: given column x, return top empty y (null if filled) */
 
 const findSpotForCol = (x) => {
-	// TODO: write the real version of this, rather than always returning 0
-	let y = HEIGHT - 1;
-
-	if (board[y][x] !== null) {
-		y--;
+	for (let y = HEIGHT - 1; y >= 0; y--) {
+		if (board[y][x] === null) {
+			return y;
+		}
 	}
-	console.log(`y = ${y}`);
-	console.log(board[y][x]);
-	return y;
+	return null;
 };
 
 /** placeInTable: update DOM to place piece into HTML table of board */
@@ -81,8 +79,6 @@ const placeInTable = (y, x) => {
 	piece.classList.add(`piece`);
 	piece.classList.add(`p${currPlayer}`);
 
-	// remove this console.log
-	console.log(`${y}-${x}`);
 	pieceSpot.append(piece);
 };
 
@@ -100,7 +96,6 @@ const handleClick = (evt) => {
 	let x = +evt.target.id;
 
 	// get next spot in column (if none, ignore click)
-	// Do we need x in ()?
 	let y = findSpotForCol(x);
 	if (y === null) {
 		return;
@@ -137,15 +132,16 @@ const checkForWin = () => {
 		return cells.every(([ y, x ]) => y >= 0 && y < HEIGHT && x >= 0 && x < WIDTH && board[y][x] === currPlayer);
 	}
 
-	// TODO: read and understand this code. Add comments to help you.
-
+	// checks the whole board for a win using a loop with a nested loop
 	for (let y = 0; y < HEIGHT; y++) {
 		for (let x = 0; x < WIDTH; x++) {
-			const horiz = [ [ y, x ], [ y, x + 1 ], [ y, x + 2 ], [ y, x + 3 ] ];
-			const vert = [ [ y, x ], [ y + 1, x ], [ y + 2, x ], [ y + 3, x ] ];
-			const diagDR = [ [ y, x ], [ y + 1, x + 1 ], [ y + 2, x + 2 ], [ y + 3, x + 3 ] ];
-			const diagDL = [ [ y, x ], [ y + 1, x - 1 ], [ y + 2, x - 2 ], [ y + 3, x - 3 ] ];
+			// each const defines a variable that creates a condition to win
+			const horiz = [ [ y, x ], [ y, x + 1 ], [ y, x + 2 ], [ y, x + 3 ] ]; // starts from cell then checks the next 3 to its right
+			const vert = [ [ y, x ], [ y + 1, x ], [ y + 2, x ], [ y + 3, x ] ]; // starts from cell then checks the next 3 underneath
+			const diagDR = [ [ y, x ], [ y + 1, x + 1 ], [ y + 2, x + 2 ], [ y + 3, x + 3 ] ]; // starts from cell then checks the next 3 diagonal to the down right
+			const diagDL = [ [ y, x ], [ y + 1, x - 1 ], [ y + 2, x - 2 ], [ y + 3, x - 3 ] ]; // starts from cell then checks the next 3 diagonal to the down left
 
+			// passes const variables in to checkForWin based on conditions set above in _win(cells). If true, currPlayer wins
 			if (_win(horiz) || _win(vert) || _win(diagDR) || _win(diagDL)) {
 				return true;
 			}
